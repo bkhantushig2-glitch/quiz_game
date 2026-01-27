@@ -13,6 +13,14 @@ def show_menu(categories):
     print(f"  {len(categories) + 2}. Quit")
     print()
 
+def show_difficulty_menu():
+    print("\nPick a difficulty:")
+    print("  1. Easy")
+    print("  2. Medium")
+    print("  3. Hard")
+    print("  4. All")
+    print()
+
 def show_question(num, total, q):
     print(f"\nQuestion {num}/{total}")
     print(f"  {q['question']}")

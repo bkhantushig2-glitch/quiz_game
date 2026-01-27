@@ -12,8 +12,13 @@ def get_categories():
     data = load_questions()
     return list(data.keys())
 
-def get_questions(category):
+def get_difficulties():
+    return ["easy", "medium", "hard"]
+
+def get_questions(category, difficulty=None):
     data = load_questions()
     questions = data[category]
+    if difficulty:
+        questions = [q for q in questions if q["difficulty"] == difficulty]
     random.shuffle(questions)
     return questions

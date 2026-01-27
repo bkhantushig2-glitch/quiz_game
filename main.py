@@ -1,8 +1,9 @@
-from questions import get_categories, get_questions
+from questions import get_categories, get_questions, get_difficulties
 from scoring import save_score, get_top_scores
 from display import (
     show_welcome, show_menu, show_question,
-    show_result, show_final_score, show_leaderboard
+    show_result, show_final_score, show_leaderboard,
+    show_difficulty_menu
 )
 
 def get_choice(prompt, max_val):
@@ -15,8 +16,22 @@ def get_choice(prompt, max_val):
         except ValueError:
             print("  Enter a number")
 
+def pick_difficulty():
+    show_difficulty_menu()
+    choice = get_choice("Your choice: ", 4)
+    difficulties = get_difficulties()
+    if choice == 4:
+        return None
+    return difficulties[choice - 1]
+
 def play_round(category):
-    questions = get_questions(category)
+    difficulty = pick_difficulty()
+    questions = get_questions(category, difficulty)
+
+    if not questions:
+        print("  No questions for that difficulty. Try another!")
+        return
+
     score = 0
 
     for i, q in enumerate(questions, 1):

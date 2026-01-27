@@ -3,81 +3,138 @@
     {
       "question": "What planet is known as the Red Planet?",
       "options": ["Venus", "Mars", "Jupiter", "Saturn"],
-      "answer": "Mars"
-    },
-    {
-      "question": "What gas do plants absorb from the air?",
-      "options": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Helium"],
-      "answer": "Carbon Dioxide"
-    },
-    {
-      "question": "How many bones are in the human body?",
-      "options": ["106", "206", "306", "186"],
-      "answer": "206"
+      "answer": "Mars",
+      "difficulty": "easy"
     },
     {
       "question": "What is the chemical symbol for water?",
       "options": ["O2", "CO2", "H2O", "NaCl"],
-      "answer": "H2O"
+      "answer": "H2O",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What gas do plants absorb from the air?",
+      "options": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Helium"],
+      "answer": "Carbon Dioxide",
+      "difficulty": "medium"
     },
     {
       "question": "What is the closest star to Earth?",
       "options": ["Sirius", "Alpha Centauri", "The Sun", "Betelgeuse"],
-      "answer": "The Sun"
+      "answer": "The Sun",
+      "difficulty": "medium"
+    },
+    {
+      "question": "How many bones are in the human body?",
+      "options": ["106", "206", "306", "186"],
+      "answer": "206",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the powerhouse of the cell?",
+      "options": ["Nucleus", "Ribosome", "Mitochondria", "Golgi body"],
+      "answer": "Mitochondria",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What element has the atomic number 79?",
+      "options": ["Silver", "Iron", "Gold", "Copper"],
+      "answer": "Gold",
+      "difficulty": "hard"
+    },
+    {
+      "question": "What is the speed of light in km/s (approx)?",
+      "options": ["100,000", "200,000", "300,000", "400,000"],
+      "answer": "300,000",
+      "difficulty": "hard"
     }
   ],
   "geography": [
     {
       "question": "What is the capital of Mongolia?",
       "options": ["Astana", "Ulaanbaatar", "Beijing", "Seoul"],
-      "answer": "Ulaanbaatar"
-    },
-    {
-      "question": "What is the longest river in the world?",
-      "options": ["Amazon", "Nile", "Yangtze", "Mississippi"],
-      "answer": "Nile"
+      "answer": "Ulaanbaatar",
+      "difficulty": "easy"
     },
     {
       "question": "Which continent is the largest by area?",
       "options": ["Africa", "North America", "Europe", "Asia"],
-      "answer": "Asia"
+      "answer": "Asia",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the longest river in the world?",
+      "options": ["Amazon", "Nile", "Yangtze", "Mississippi"],
+      "answer": "Nile",
+      "difficulty": "medium"
     },
     {
       "question": "What country has the most people?",
       "options": ["USA", "India", "China", "Indonesia"],
-      "answer": "India"
+      "answer": "India",
+      "difficulty": "medium"
     },
     {
       "question": "What is the smallest country in the world?",
       "options": ["Monaco", "Vatican City", "Malta", "San Marino"],
-      "answer": "Vatican City"
+      "answer": "Vatican City",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What is the driest desert in the world?",
+      "options": ["Sahara", "Gobi", "Atacama", "Arabian"],
+      "answer": "Atacama",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Which country has the most time zones?",
+      "options": ["Russia", "USA", "France", "China"],
+      "answer": "France",
+      "difficulty": "hard"
     }
   ],
   "history": [
     {
       "question": "Who founded the Mongol Empire?",
       "options": ["Kublai Khan", "Genghis Khan", "Ogedei Khan", "Batu Khan"],
-      "answer": "Genghis Khan"
+      "answer": "Genghis Khan",
+      "difficulty": "easy"
     },
     {
       "question": "In what year did World War II end?",
       "options": ["1943", "1944", "1945", "1946"],
-      "answer": "1945"
+      "answer": "1945",
+      "difficulty": "easy"
     },
     {
       "question": "Who was the first person to walk on the moon?",
       "options": ["Buzz Aldrin", "Yuri Gagarin", "Neil Armstrong", "John Glenn"],
-      "answer": "Neil Armstrong"
+      "answer": "Neil Armstrong",
+      "difficulty": "medium"
     },
     {
       "question": "What ancient wonder was located in Egypt?",
       "options": ["Colosseum", "Great Pyramid of Giza", "Hanging Gardens", "Parthenon"],
-      "answer": "Great Pyramid of Giza"
+      "answer": "Great Pyramid of Giza",
+      "difficulty": "medium"
     },
     {
       "question": "Which empire was the largest in history by land area?",
       "options": ["Roman Empire", "British Empire", "Mongol Empire", "Ottoman Empire"],
-      "answer": "Mongol Empire"
+      "answer": "Mongol Empire",
+      "difficulty": "medium"
+    },
+    {
+      "question": "In what year was the Berlin Wall torn down?",
+      "options": ["1987", "1989", "1991", "1993"],
+      "answer": "1989",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Who was the first Emperor of Rome?",
+      "options": ["Julius Caesar", "Augustus", "Nero", "Caligula"],
+      "answer": "Augustus",
+      "difficulty": "hard"
     }
   ]
 }

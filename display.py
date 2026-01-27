@@ -29,29 +29,31 @@ def show_difficulty_menu():
     print()
 
 def show_question(num, total, q):
-    print(f"\nQuestion {num}/{total}")
+    print(f"\nQuestion {num}/{total}  {YELLOW}(answer fast for more points!){RESET}")
     print(f"  {q['question']}")
     for i, option in enumerate(q["options"], 1):
         print(f"    {i}. {option}")
 
-def show_result(correct, answer):
+def show_result(correct, answer, elapsed, points):
+    secs = f"{elapsed:.1f}s"
     if correct:
-        print(f"  {GREEN}Correct!{RESET}")
+        print(f"  {GREEN}Correct!{RESET} ({secs}) {BOLD}+{points} pts{RESET}")
     else:
-        print(f"  {RED}Wrong!{RESET} The answer was: {YELLOW}{answer}{RESET}")
+        print(f"  {RED}Wrong!{RESET} The answer was: {YELLOW}{answer}{RESET} ({secs}) +0 pts")
 
 def show_final_score(score, total):
     print()
     print("-" * 30)
-    print(f"  You got {BOLD}{score}/{total}{RESET}")
-    if score == total:
+    print(f"  You scored {BOLD}{score}/{total} pts{RESET}")
+    pct = score / total * 100 if total > 0 else 0
+    if pct == 100:
         print()
         print(f"  {YELLOW}*   *   *   *   *   *   *{RESET}")
         print(f"  {GREEN}    PERFECT SCORE!{RESET}")
         print(f"  {YELLOW}*   *   *   *   *   *   *{RESET}")
         print()
         print(f"  {GREEN}    You are a champion!{RESET}")
-    elif score >= total / 2:
+    elif pct >= 50:
         print(f"  {GREEN}Nice job!{RESET}")
     else:
         print(f"  {RED}Better luck next time!{RESET}")

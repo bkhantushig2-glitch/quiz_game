@@ -1,3 +1,4 @@
+import time
 from questions import get_categories, get_questions, get_difficulties
 from scoring import save_score, get_top_scores, get_player_stats
 from display import (
@@ -33,21 +34,24 @@ def play_round(category):
         return
 
     score = 0
+    max_points = len(questions) * 10
 
     for i, q in enumerate(questions, 1):
         show_question(i, len(questions), q)
+        start = time.time()
         choice = get_choice("  Your answer: ", len(q["options"]))
+        elapsed = time.time() - start
         picked = q["options"][choice - 1]
         correct = picked == q["answer"]
-        if correct:
-            score += 1
-        show_result(correct, q["answer"])
+        points = max(1, 10 - int(elapsed)) if correct else 0
+        score += points
+        show_result(correct, q["answer"], elapsed, points)
 
-    show_final_score(score, len(questions))
+    show_final_score(score, max_points)
 
     name = input("\nEnter your name for the leaderboard: ").strip()
     if name:
-        save_score(name, score, len(questions), category)
+        save_score(name, score, max_points, category)
 
 def main():
     show_welcome()

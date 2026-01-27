@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 from questions import get_categories, get_point_values, build_board
-from scoring import save_score, get_top_scores, get_player_stats
+from scoring import save_score, get_top_scores
 
 st.set_page_config(page_title="Khantushig's Jeopardy", page_icon="🏆", layout="wide")
 
@@ -9,13 +9,17 @@ POINT_VALUES = get_point_values()
 
 def init_state():
     if "screen" not in st.session_state:
-        st.session_state.screen = "board"
+        st.session_state.screen = "start"
+    if "players" not in st.session_state:
+        st.session_state.players = []
+    if "scores" not in st.session_state:
+        st.session_state.scores = {}
+    if "turn" not in st.session_state:
+        st.session_state.turn = 0
     if "board" not in st.session_state:
-        st.session_state.board = build_board()
+        st.session_state.board = None
     if "used" not in st.session_state:
         st.session_state.used = set()
-    if "score" not in st.session_state:
-        st.session_state.score = 0
     if "current_q" not in st.session_state:
         st.session_state.current_q = None
     if "current_cat" not in st.session_state:
@@ -26,19 +30,26 @@ def init_state():
         st.session_state.q_start_time = None
     if "history" not in st.session_state:
         st.session_state.history = []
-    if "max_possible" not in st.session_state:
-        st.session_state.max_possible = sum(POINT_VALUES) * len(get_categories())
+    if "num_players" not in st.session_state:
+        st.session_state.num_players = 2
 
 def new_game():
     st.session_state.board = build_board()
     st.session_state.used = set()
-    st.session_state.score = 0
+    st.session_state.scores = {p: 0 for p in st.session_state.players}
+    st.session_state.turn = 0
     st.session_state.current_q = None
     st.session_state.current_cat = None
     st.session_state.current_pts = 0
     st.session_state.q_start_time = None
     st.session_state.history = []
     st.session_state.screen = "board"
+
+def current_player():
+    return st.session_state.players[st.session_state.turn]
+
+def next_turn():
+    st.session_state.turn = (st.session_state.turn + 1) % len(st.session_state.players)
 
 def pick_question(cat, pts):
     st.session_state.current_q = st.session_state.board[cat][pts]
@@ -52,17 +63,19 @@ def answer_question(picked):
     elapsed = time.time() - st.session_state.q_start_time
     correct = picked == q["answer"]
     pts = st.session_state.current_pts
+    player = current_player()
 
     if correct:
         bonus = max(0, 5 - int(elapsed))
         earned = pts + (bonus * 50)
     else:
-        earned = 0
+        earned = -pts
 
-    st.session_state.score += earned
+    st.session_state.scores[player] += earned
     key = f"{st.session_state.current_cat}_{pts}"
     st.session_state.used.add(key)
     st.session_state.history.append({
+        "player": player,
         "category": st.session_state.current_cat,
         "question": q["question"],
         "picked": picked,
@@ -79,9 +92,57 @@ def answer_question(picked):
     else:
         st.session_state.screen = "result"
 
+# ---- SCREENS ----
+
+def show_start():
+    st.title("🏆 Khantushig's Jeopardy")
+    st.divider()
+
+    num = st.slider("How many players?", min_value=1, max_value=6, value=st.session_state.num_players)
+    st.session_state.num_players = num
+
+    names = []
+    cols = st.columns(min(num, 3))
+    for i in range(num):
+        with cols[i % 3]:
+            name = st.text_input(f"Player {i + 1}", value=f"Player {i + 1}", key=f"name_{i}")
+            names.append(name.strip())
+
+    st.divider()
+
+    with st.expander("Leaderboard"):
+        show_leaderboard()
+
+    if st.button("Start Game", type="primary", use_container_width=True):
+        st.session_state.players = names
+        st.session_state.board = build_board()
+        st.session_state.scores = {p: 0 for p in names}
+        st.session_state.turn = 0
+        st.session_state.used = set()
+        st.session_state.history = []
+        st.session_state.screen = "board"
+        st.rerun()
+
+def show_scoreboard():
+    players = st.session_state.players
+    scores = st.session_state.scores
+    cols = st.columns(len(players))
+    for i, player in enumerate(players):
+        with cols[i]:
+            is_current = (player == current_player() and st.session_state.screen == "board")
+            score = scores[player]
+            if is_current:
+                st.markdown(f"**➤ {player}**")
+            else:
+                st.markdown(f"**{player}**")
+            color = "green" if score >= 0 else "red"
+            st.markdown(f":{color}[${score}]")
+
 def show_board():
     st.title("🏆 Khantushig's Jeopardy")
-    st.markdown(f"**Score: {st.session_state.score}**")
+    show_scoreboard()
+    st.markdown(f"### {current_player()}'s turn — pick a question!")
+    st.divider()
 
     categories = list(st.session_state.board.keys())
     cols = st.columns(len(categories))
@@ -92,7 +153,7 @@ def show_board():
             for pts in POINT_VALUES:
                 key = f"{cat}_{pts}"
                 if key in st.session_state.used:
-                    st.button(f"---", key=f"btn_{key}", disabled=True, use_container_width=True)
+                    st.button("---", key=f"btn_{key}", disabled=True, use_container_width=True)
                 else:
                     if st.button(f"${pts}", key=f"btn_{key}", use_container_width=True):
                         pick_question(cat, pts)
@@ -106,21 +167,20 @@ def show_board():
             st.rerun()
     with col2:
         if st.button("New Game"):
-            new_game()
+            st.session_state.screen = "start"
             st.rerun()
-
-    with st.expander("Leaderboard"):
-        show_leaderboard()
 
 def show_question():
     q = st.session_state.current_q
     cat = st.session_state.current_cat
     pts = st.session_state.current_pts
+    player = current_player()
 
-    st.markdown(f"### {cat.upper()} for ${pts}")
+    show_scoreboard()
     st.divider()
+    st.markdown(f"### {player} — {cat.upper()} for ${pts}")
     st.subheader(q["question"])
-    st.caption("Answer fast for bonus points!")
+    st.caption(f"Correct = +${pts} (+ speed bonus) | Wrong = -${pts}")
 
     for option in q["options"]:
         if st.button(option, key=f"ans_{option}", use_container_width=True):
@@ -130,55 +190,64 @@ def show_question():
 def show_result():
     last = st.session_state.history[-1]
 
+    show_scoreboard()
+    st.divider()
+
     if last["correct"]:
-        st.success(f"### Correct! +${last['earned']}")
+        st.success(f"### {last['player']} got it right! +${last['earned']}")
     else:
-        st.error(f"### Wrong! The answer was: {last['answer']}")
+        st.error(f"### {last['player']} got it wrong! -${last['max_pts']}")
+        st.write(f"The answer was: **{last['answer']}**")
 
     st.write(f"Time: {last['time']}s")
-    st.write(f"**Current score: ${st.session_state.score}**")
 
-    if st.button("Back to Board", type="primary", use_container_width=True):
+    if st.button("Next Turn", type="primary", use_container_width=True):
+        next_turn()
         st.session_state.screen = "board"
         st.rerun()
 
 def show_final():
-    score = st.session_state.score
-    total = st.session_state.max_possible
+    scores = st.session_state.scores
+    ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    winner = ranked[0]
 
-    if score >= total * 0.8:
-        st.balloons()
-        st.title("🏆 AMAZING!")
-    elif score >= total * 0.5:
-        st.title("👏 Nice job!")
-    else:
-        st.title("Game Over!")
+    st.balloons()
+    st.title(f"🏆 {winner[0]} wins!")
+    st.header(f"Final Score: ${winner[1]}")
+    st.divider()
 
-    st.header(f"Final Score: ${score}")
-
-    correct_count = sum(1 for h in st.session_state.history if h["correct"])
-    total_answered = len(st.session_state.history)
-    st.write(f"**{correct_count}/{total_answered}** questions correct")
+    st.subheader("Final Standings")
+    for i, (player, score) in enumerate(ranked, 1):
+        if i == 1:
+            medal = "🥇"
+        elif i == 2:
+            medal = "🥈"
+        elif i == 3:
+            medal = "🥉"
+        else:
+            medal = f"  {i}."
+        color = "green" if score >= 0 else "red"
+        st.markdown(f"{medal} **{player}** — :{color}[${score}]")
 
     st.divider()
     st.subheader("Round Summary")
     for h in st.session_state.history:
         if h["correct"]:
-            st.success(f"**{h['category'].title()} ${h['max_pts']}** — {h['question']} (+${h['earned']}, {h['time']}s)")
+            st.success(f"**{h['player']}** — {h['category'].title()} ${h['max_pts']} — {h['question']} (+${h['earned']}, {h['time']}s)")
         else:
-            st.error(f"**{h['category'].title()} ${h['max_pts']}** — {h['question']} — Answer: {h['answer']} ({h['time']}s)")
+            st.error(f"**{h['player']}** — {h['category'].title()} ${h['max_pts']} — {h['question']} — Answer: {h['answer']} ({h['time']}s)")
 
     st.divider()
-    name = st.text_input("Enter your name for the leaderboard")
     col1, col2 = st.columns(2)
     with col1:
-        if name and st.button("Save Score", type="primary"):
-            save_score(name, score, total, "jeopardy")
-            new_game()
-            st.rerun()
+        if st.button("Save All Scores", type="primary"):
+            total = sum(POINT_VALUES) * len(get_categories())
+            for player, score in scores.items():
+                save_score(player, score, total, "jeopardy")
+            st.success("Scores saved!")
     with col2:
         if st.button("Play Again"):
-            new_game()
+            st.session_state.screen = "start"
             st.rerun()
 
 def show_leaderboard():
@@ -200,7 +269,9 @@ def show_leaderboard():
 def main():
     init_state()
     screen = st.session_state.screen
-    if screen == "board":
+    if screen == "start":
+        show_start()
+    elif screen == "board":
         show_board()
     elif screen == "question":
         show_question()

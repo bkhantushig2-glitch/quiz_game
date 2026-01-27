@@ -1,9 +1,9 @@
 from questions import get_categories, get_questions, get_difficulties
-from scoring import save_score, get_top_scores
+from scoring import save_score, get_top_scores, get_player_stats
 from display import (
     show_welcome, show_menu, show_question,
     show_result, show_final_score, show_leaderboard,
-    show_difficulty_menu
+    show_difficulty_menu, show_player_stats
 )
 
 def get_choice(prompt, max_val):
@@ -56,13 +56,18 @@ def main():
         categories = get_categories()
         show_menu(categories)
 
-        choice = get_choice("Your choice: ", len(categories) + 2)
+        choice = get_choice("Your choice: ", len(categories) + 3)
 
-        if choice == len(categories) + 2:
+        if choice == len(categories) + 3:
             print("Thanks for playing!\n")
             break
         elif choice == len(categories) + 1:
             show_leaderboard(get_top_scores())
+        elif choice == len(categories) + 2:
+            name = input("Enter your name: ").strip()
+            if name:
+                stats = get_player_stats(name)
+                show_player_stats(name, stats)
         else:
             category = categories[choice - 1]
             play_round(category)

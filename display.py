@@ -16,7 +16,8 @@ def show_menu(categories):
     for i, cat in enumerate(categories, 1):
         print(f"  {i}. {cat.title()}")
     print(f"  {len(categories) + 1}. Leaderboard")
-    print(f"  {len(categories) + 2}. Quit")
+    print(f"  {len(categories) + 2}. Player Stats")
+    print(f"  {len(categories) + 3}. Quit")
     print()
 
 def show_difficulty_menu():
@@ -60,4 +61,29 @@ def show_leaderboard(scores):
         print("  No scores yet. Play a round!")
     for i, s in enumerate(scores, 1):
         print(f"  {i}. {s['name']} - {s['score']}/{s['total']} ({s['category']}) {s['date']}")
+    print()
+
+def show_player_stats(name, stats):
+    print()
+    print("=" * 40)
+    print(f"       {BOLD}STATS FOR {name.upper()}{RESET}")
+    print("=" * 40)
+
+    if not stats:
+        print("  No stats found. Play a round first!")
+        print()
+        return
+
+    print(f"  Games played: {stats['games']}")
+    total = stats['total_questions']
+    correct = stats['total_correct']
+    pct = round(correct / total * 100) if total > 0 else 0
+    print(f"  Overall: {correct}/{total} ({pct}%)")
+    print()
+
+    print(f"  {BOLD}By category:{RESET}")
+    for cat, data in stats["categories"].items():
+        cat_pct = round(data['correct'] / data['total'] * 100) if data['total'] > 0 else 0
+        color = GREEN if cat_pct >= 50 else RED
+        print(f"    {cat.title():12s} {color}{data['correct']}/{data['total']} ({cat_pct}%){RESET}")
     print()

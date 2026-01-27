@@ -26,3 +26,29 @@ def get_top_scores(limit=5):
     scores = load_scores()
     scores.sort(key=lambda s: s["score"], reverse=True)
     return scores[:limit]
+
+def get_player_stats(name):
+    scores = load_scores()
+    player_scores = [s for s in scores if s["name"].lower() == name.lower()]
+
+    if not player_scores:
+        return None
+
+    stats = {"games": len(player_scores), "categories": {}}
+    total_correct = 0
+    total_questions = 0
+
+    for s in player_scores:
+        cat = s["category"]
+        if cat not in stats["categories"]:
+            stats["categories"][cat] = {"correct": 0, "total": 0, "games": 0}
+        stats["categories"][cat]["correct"] += s["score"]
+        stats["categories"][cat]["total"] += s["total"]
+        stats["categories"][cat]["games"] += 1
+        total_correct += s["score"]
+        total_questions += s["total"]
+
+    stats["total_correct"] = total_correct
+    stats["total_questions"] = total_questions
+
+    return stats

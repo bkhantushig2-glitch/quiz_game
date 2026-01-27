@@ -45,22 +45,67 @@ def show_final_score(score, total):
     print("-" * 30)
     print(f"  You got {BOLD}{score}/{total}{RESET}")
     if score == total:
-        print(f"  {GREEN}Perfect score!{RESET}")
+        print()
+        print(f"  {YELLOW}*   *   *   *   *   *   *{RESET}")
+        print(f"  {GREEN}    PERFECT SCORE!{RESET}")
+        print(f"  {YELLOW}*   *   *   *   *   *   *{RESET}")
+        print()
+        print(f"  {GREEN}    You are a champion!{RESET}")
     elif score >= total / 2:
         print(f"  {GREEN}Nice job!{RESET}")
     else:
         print(f"  {RED}Better luck next time!{RESET}")
     print("-" * 30)
 
+def _pad_name(name, width=10):
+    if len(name) > width:
+        return name[:width]
+    return name.center(width)
+
+def show_podium(scores):
+    if len(scores) < 3:
+        return
+
+    first = _pad_name(scores[0]["name"])
+    second = _pad_name(scores[1]["name"])
+    third = _pad_name(scores[2]["name"])
+    s1 = f"{scores[0]['score']}/{scores[0]['total']}"
+    s2 = f"{scores[1]['score']}/{scores[1]['total']}"
+    s3 = f"{scores[2]['score']}/{scores[2]['total']}"
+
+    print(f"              {YELLOW}** 1ST **{RESET}")
+    print(f"              {YELLOW}{first}{RESET}")
+    print(f"              {YELLOW}  {s1}  {RESET}")
+    print(f"            ___________")
+    print(f"           |           |")
+    print(f"  {second}|           |{third}")
+    print(f"    {s2}  |           |  {s3}")
+    print(f"  _________|           |_________")
+    print(f" | 2ND     |    1ST    |     3RD |")
+    print(f" |_________|___________|_________|")
+    print()
+
 def show_leaderboard(scores):
     print()
     print("=" * 40)
     print(f"       {BOLD}LEADERBOARD{RESET}")
     print("=" * 40)
+
     if not scores:
         print("  No scores yet. Play a round!")
+        print()
+        return
+
+    show_podium(scores)
+
     for i, s in enumerate(scores, 1):
-        print(f"  {i}. {s['name']} - {s['score']}/{s['total']} ({s['category']}) {s['date']}")
+        if i == 1:
+            color = YELLOW
+        elif i == 2:
+            color = GREEN
+        else:
+            color = RESET
+        print(f"  {color}{i}. {s['name']} - {s['score']}/{s['total']} ({s['category']}) {s['date']}{RESET}")
     print()
 
 def show_player_stats(name, stats):

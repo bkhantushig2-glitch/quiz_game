@@ -1,0 +1,83 @@
+{
+  "science": [
+    {
+      "question": "What planet is known as the Red Planet?",
+      "options": ["Venus", "Mars", "Jupiter", "Saturn"],
+      "answer": "Mars"
+    },
+    {
+      "question": "What gas do plants absorb from the air?",
+      "options": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Helium"],
+      "answer": "Carbon Dioxide"
+    },
+    {
+      "question": "How many bones are in the human body?",
+      "options": ["106", "206", "306", "186"],
+      "answer": "206"
+    },
+    {
+      "question": "What is the chemical symbol for water?",
+      "options": ["O2", "CO2", "H2O", "NaCl"],
+      "answer": "H2O"
+    },
+    {
+      "question": "What is the closest star to Earth?",
+      "options": ["Sirius", "Alpha Centauri", "The Sun", "Betelgeuse"],
+      "answer": "The Sun"
+    }
+  ],
+  "geography": [
+    {
+      "question": "What is the capital of Mongolia?",
+      "options": ["Astana", "Ulaanbaatar", "Beijing", "Seoul"],
+      "answer": "Ulaanbaatar"
+    },
+    {
+      "question": "What is the longest river in the world?",
+      "options": ["Amazon", "Nile", "Yangtze", "Mississippi"],
+      "answer": "Nile"
+    },
+    {
+      "question": "Which continent is the largest by area?",
+      "options": ["Africa", "North America", "Europe", "Asia"],
+      "answer": "Asia"
+    },
+    {
+      "question": "What country has the most people?",
+      "options": ["USA", "India", "China", "Indonesia"],
+      "answer": "India"
+    },
+    {
+      "question": "What is the smallest country in the world?",
+      "options": ["Monaco", "Vatican City", "Malta", "San Marino"],
+      "answer": "Vatican City"
+    }
+  ],
+  "history": [
+    {
+      "question": "Who founded the Mongol Empire?",
+      "options": ["Kublai Khan", "Genghis Khan", "Ogedei Khan", "Batu Khan"],
+      "answer": "Genghis Khan"
+    },
+    {
+      "question": "In what year did World War II end?",
+      "options": ["1943", "1944", "1945", "1946"],
+      "answer": "1945"
+    },
+    {
+      "question": "Who was the first person to walk on the moon?",
+      "options": ["Buzz Aldrin", "Yuri Gagarin", "Neil Armstrong", "John Glenn"],
+      "answer": "Neil Armstrong"
+    },
+    {
+      "question": "What ancient wonder was located in Egypt?",
+      "options": ["Colosseum", "Great Pyramid of Giza", "Hanging Gardens", "Parthenon"],
+      "answer": "Great Pyramid of Giza"
+    },
+    {
+      "question": "Which empire was the largest in history by land area?",
+      "options": ["Roman Empire", "British Empire", "Mongol Empire", "Ottoman Empire"],
+      "answer": "Mongol Empire"
+    }
+  ]
+}

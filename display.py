@@ -1,7 +1,13 @@
+GREEN = "\033[92m"
+RED = "\033[91m"
+YELLOW = "\033[93m"
+BOLD = "\033[1m"
+RESET = "\033[0m"
+
 def show_welcome():
     print()
     print("=" * 40)
-    print("        QUIZ GAME")
+    print(f"        {BOLD}QUIZ GAME{RESET}")
     print("=" * 40)
     print()
 
@@ -29,26 +35,26 @@ def show_question(num, total, q):
 
 def show_result(correct, answer):
     if correct:
-        print("  Correct!")
+        print(f"  {GREEN}Correct!{RESET}")
     else:
-        print(f"  Wrong! The answer was: {answer}")
+        print(f"  {RED}Wrong!{RESET} The answer was: {YELLOW}{answer}{RESET}")
 
 def show_final_score(score, total):
     print()
     print("-" * 30)
-    print(f"  You got {score}/{total}")
+    print(f"  You got {BOLD}{score}/{total}{RESET}")
     if score == total:
-        print("  Perfect score!")
+        print(f"  {GREEN}Perfect score!{RESET}")
     elif score >= total / 2:
-        print("  Nice job!")
+        print(f"  {GREEN}Nice job!{RESET}")
     else:
-        print("  Better luck next time!")
+        print(f"  {RED}Better luck next time!{RESET}")
     print("-" * 30)
 
 def show_leaderboard(scores):
     print()
     print("=" * 40)
-    print("       LEADERBOARD")
+    print(f"       {BOLD}LEADERBOARD{RESET}")
     print("=" * 40)
     if not scores:
         print("  No scores yet. Play a round!")

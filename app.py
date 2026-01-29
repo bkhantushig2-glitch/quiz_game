@@ -1,147 +1,244 @@
 import streamlit as st
 import time
+import os
 from questions import get_categories, get_point_values, build_board
-from scoring import save_score, get_top_scores
+from scoring import save_score, get_top_scores, SCORES_FILE
 
-st.set_page_config(page_title="Khantushig's Jeopardy", page_icon="🏆", layout="wide")
+st.set_page_config(page_title="Khantushig's Jeopardy", page_icon="🎯", layout="wide")
+
+# Custom CSS for Gen Z vibes
+st.markdown("""
+<style>
+    .stApp {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+    .main-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 0;
+    }
+    .subtitle {
+        text-align: center;
+        color: #a0a0a0;
+        font-size: 1.2rem;
+        margin-top: 0;
+    }
+    .player-card {
+        background: linear-gradient(145deg, #2d2d44, #1a1a2e);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        border: 2px solid #3d3d5c;
+        transition: all 0.3s ease;
+    }
+    .player-card:hover {
+        transform: translateY(-5px);
+        border-color: #ff6b6b;
+    }
+    .score-positive {
+        color: #2ecc71;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .score-negative {
+        color: #e74c3c;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .question-box {
+        background: linear-gradient(145deg, #2d2d44, #1a1a2e);
+        border-radius: 20px;
+        padding: 30px;
+        border: 3px solid #48dbfb;
+        margin: 20px 0;
+    }
+    .category-header {
+        color: #feca57;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    div[data-testid="stButton"] button {
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    div[data-testid="stButton"] button:hover {
+        transform: scale(1.02);
+    }
+</style>
+""", unsafe_allow_html=True)
 
 POINT_VALUES = get_point_values()
 
 def init_state():
-    if "screen" not in st.session_state:
-        st.session_state.screen = "start"
-    if "players" not in st.session_state:
-        st.session_state.players = []
-    if "scores" not in st.session_state:
-        st.session_state.scores = {}
-    if "turn" not in st.session_state:
-        st.session_state.turn = 0
-    if "board" not in st.session_state:
-        st.session_state.board = None
-    if "used" not in st.session_state:
-        st.session_state.used = set()
-    if "current_q" not in st.session_state:
-        st.session_state.current_q = None
-    if "current_cat" not in st.session_state:
-        st.session_state.current_cat = None
-    if "current_pts" not in st.session_state:
-        st.session_state.current_pts = 0
-    if "q_start_time" not in st.session_state:
-        st.session_state.q_start_time = None
-    if "history" not in st.session_state:
-        st.session_state.history = []
-    if "num_players" not in st.session_state:
-        st.session_state.num_players = 2
+    defaults = {
+        "screen": "start",
+        "players": [],
+        "scores": {},
+        "board": None,
+        "used": set(),
+        "current_q": None,
+        "current_cat": None,
+        "current_pts": 0,
+        "history": [],
+        "num_players": 2,
+        "show_answer": False,
+    }
+    for key, val in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = val
 
-def new_game():
-    st.session_state.board = build_board()
+def clear_all_scores():
+    if os.path.exists(SCORES_FILE):
+        os.remove(SCORES_FILE)
+
+def reset_to_start():
+    st.session_state.screen = "start"
+    st.session_state.players = []
+    st.session_state.scores = {}
+    st.session_state.board = None
     st.session_state.used = set()
-    st.session_state.scores = {p: 0 for p in st.session_state.players}
-    st.session_state.turn = 0
     st.session_state.current_q = None
-    st.session_state.current_cat = None
-    st.session_state.current_pts = 0
-    st.session_state.q_start_time = None
     st.session_state.history = []
-    st.session_state.screen = "board"
-
-def current_player():
-    return st.session_state.players[st.session_state.turn]
-
-def next_turn():
-    st.session_state.turn = (st.session_state.turn + 1) % len(st.session_state.players)
+    st.session_state.show_answer = False
 
 def pick_question(cat, pts):
     st.session_state.current_q = st.session_state.board[cat][pts]
     st.session_state.current_cat = cat
     st.session_state.current_pts = pts
-    st.session_state.q_start_time = time.time()
+    st.session_state.show_answer = False
     st.session_state.screen = "question"
 
-def answer_question(picked):
-    q = st.session_state.current_q
-    elapsed = time.time() - st.session_state.q_start_time
-    correct = picked == q["answer"]
+def award_points(player, correct):
     pts = st.session_state.current_pts
-    player = current_player()
+    cat = st.session_state.current_cat
+    q = st.session_state.current_q
 
     if correct:
-        bonus = max(0, 5 - int(elapsed))
-        earned = pts + (bonus * 50)
+        st.session_state.scores[player] += pts
+        earned = pts
     else:
+        st.session_state.scores[player] -= pts
         earned = -pts
 
-    st.session_state.scores[player] += earned
-    key = f"{st.session_state.current_cat}_{pts}"
+    key = f"{cat}_{pts}"
     st.session_state.used.add(key)
     st.session_state.history.append({
         "player": player,
-        "category": st.session_state.current_cat,
+        "category": cat,
         "question": q["question"],
-        "picked": picked,
         "answer": q["answer"],
         "correct": correct,
         "earned": earned,
-        "max_pts": pts,
-        "time": round(elapsed, 1),
     })
 
     total_cells = len(get_categories()) * len(POINT_VALUES)
     if len(st.session_state.used) >= total_cells:
         st.session_state.screen = "final"
     else:
-        st.session_state.screen = "result"
+        st.session_state.screen = "board"
+
+def skip_question():
+    key = f"{st.session_state.current_cat}_{st.session_state.current_pts}"
+    st.session_state.used.add(key)
+    st.session_state.history.append({
+        "player": "Nobody",
+        "category": st.session_state.current_cat,
+        "question": st.session_state.current_q["question"],
+        "answer": st.session_state.current_q["answer"],
+        "correct": False,
+        "earned": 0,
+    })
+    total_cells = len(get_categories()) * len(POINT_VALUES)
+    if len(st.session_state.used) >= total_cells:
+        st.session_state.screen = "final"
+    else:
+        st.session_state.screen = "board"
 
 # ---- SCREENS ----
 
 def show_start():
-    st.title("🏆 Khantushig's Jeopardy")
-    st.divider()
+    st.markdown('<h1 class="main-title">🎯 JEOPARDY</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">by Khantushig Batbold</p>', unsafe_allow_html=True)
+    st.write("")
+    st.write("")
 
-    num = st.slider("How many players?", min_value=1, max_value=6, value=st.session_state.num_players)
-    st.session_state.num_players = num
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("### 👥 How many players?")
+        num = st.selectbox(
+            "Players",
+            options=[1, 2, 3, 4, 5, 6],
+            index=1,
+            label_visibility="collapsed"
+        )
+        st.session_state.num_players = num
 
-    names = []
-    cols = st.columns(min(num, 3))
-    for i in range(num):
-        with cols[i % 3]:
-            name = st.text_input(f"Player {i + 1}", value=f"Player {i + 1}", key=f"name_{i}")
-            names.append(name.strip())
+        st.write("")
+        st.markdown("### ✏️ Enter names")
+        names = []
+        for i in range(num):
+            name = st.text_input(
+                f"Player {i + 1}",
+                value=f"Player {i + 1}",
+                key=f"name_{i}",
+                label_visibility="collapsed",
+                placeholder=f"Player {i + 1} name..."
+            )
+            names.append(name.strip() if name.strip() else f"Player {i + 1}")
 
-    st.divider()
+        st.write("")
+        st.write("")
 
-    with st.expander("Leaderboard"):
-        show_leaderboard()
+        if st.button("🚀 START GAME", type="primary", use_container_width=True):
+            st.session_state.players = names
+            st.session_state.board = build_board()
+            st.session_state.scores = {p: 0 for p in names}
+            st.session_state.used = set()
+            st.session_state.history = []
+            st.session_state.screen = "board"
+            st.rerun()
 
-    if st.button("Start Game", type="primary", use_container_width=True):
-        st.session_state.players = names
-        st.session_state.board = build_board()
-        st.session_state.scores = {p: 0 for p in names}
-        st.session_state.turn = 0
-        st.session_state.used = set()
-        st.session_state.history = []
-        st.session_state.screen = "board"
-        st.rerun()
+        st.write("")
+        st.divider()
+
+        col_a, col_b = st.columns(2)
+        with col_a:
+            with st.expander("🏆 Leaderboard"):
+                show_leaderboard()
+        with col_b:
+            if st.button("🗑️ Clear All Scores", use_container_width=True):
+                clear_all_scores()
+                st.success("All scores cleared! 🧹")
+                st.rerun()
 
 def show_scoreboard():
     players = st.session_state.players
     scores = st.session_state.scores
     cols = st.columns(len(players))
+
     for i, player in enumerate(players):
         with cols[i]:
-            is_current = (player == current_player() and st.session_state.screen == "board")
             score = scores[player]
-            if is_current:
-                st.markdown(f"**➤ {player}**")
-            else:
-                st.markdown(f"**{player}**")
-            color = "green" if score >= 0 else "red"
-            st.markdown(f":{color}[${score}]")
+            emoji = "🔥" if score > 0 else "💀" if score < 0 else "😐"
+            color_class = "score-positive" if score >= 0 else "score-negative"
+            st.markdown(f"""
+                <div style="text-align: center; padding: 10px; background: linear-gradient(145deg, #2d2d44, #1a1a2e); border-radius: 12px; border: 2px solid {'#2ecc71' if score >= 0 else '#e74c3c'};">
+                    <div style="font-size: 1.1rem; color: #fff; margin-bottom: 5px;">{emoji} {player}</div>
+                    <div class="{color_class}">${score}</div>
+                </div>
+            """, unsafe_allow_html=True)
 
 def show_board():
-    st.title("🏆 Khantushig's Jeopardy")
+    st.markdown('<h1 class="main-title">🎯 JEOPARDY</h1>', unsafe_allow_html=True)
+    st.write("")
     show_scoreboard()
-    st.markdown(f"### {current_player()}'s turn — pick a question!")
+    st.write("")
     st.divider()
 
     categories = list(st.session_state.board.keys())
@@ -149,62 +246,84 @@ def show_board():
 
     for col_idx, cat in enumerate(categories):
         with cols[col_idx]:
-            st.markdown(f"**{cat.upper()}**")
+            st.markdown(f'<p class="category-header">{cat.upper()}</p>', unsafe_allow_html=True)
             for pts in POINT_VALUES:
                 key = f"{cat}_{pts}"
                 if key in st.session_state.used:
-                    st.button("---", key=f"btn_{key}", disabled=True, use_container_width=True)
+                    st.button("✓", key=f"btn_{key}", disabled=True, use_container_width=True)
                 else:
                     if st.button(f"${pts}", key=f"btn_{key}", use_container_width=True):
                         pick_question(cat, pts)
                         st.rerun()
 
+    st.write("")
     st.divider()
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("Finish Game"):
+        if st.button("🏁 End Game", use_container_width=True):
             st.session_state.screen = "final"
             st.rerun()
     with col2:
-        if st.button("New Game"):
-            st.session_state.screen = "start"
+        if st.button("🔄 New Game", use_container_width=True):
+            reset_to_start()
             st.rerun()
 
 def show_question():
     q = st.session_state.current_q
     cat = st.session_state.current_cat
     pts = st.session_state.current_pts
-    player = current_player()
 
+    st.markdown('<h1 class="main-title">🎯 JEOPARDY</h1>', unsafe_allow_html=True)
+    st.write("")
     show_scoreboard()
-    st.divider()
-    st.markdown(f"### {player} — {cat.upper()} for ${pts}")
-    st.subheader(q["question"])
-    st.caption(f"Correct = +${pts} (+ speed bonus) | Wrong = -${pts}")
+    st.write("")
 
-    for option in q["options"]:
-        if st.button(option, key=f"ans_{option}", use_container_width=True):
-            answer_question(option)
+    st.markdown(f"""
+        <div class="question-box">
+            <p class="category-header">{cat.upper()} — ${pts}</p>
+            <h2 style="color: #fff; text-align: center; margin: 20px 0;">{q['question']}</h2>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Show/hide answer toggle
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("👁️ Show Answer" if not st.session_state.show_answer else "🙈 Hide Answer", use_container_width=True):
+            st.session_state.show_answer = not st.session_state.show_answer
             st.rerun()
 
-def show_result():
-    last = st.session_state.history[-1]
+        if st.session_state.show_answer:
+            st.success(f"**Answer:** {q['answer']}")
 
-    show_scoreboard()
+    st.write("")
     st.divider()
+    st.markdown("### 🎉 Who got it right?")
+    st.caption("Click the player who answered correctly, or mark wrong/skip")
 
-    if last["correct"]:
-        st.success(f"### {last['player']} got it right! +${last['earned']}")
-    else:
-        st.error(f"### {last['player']} got it wrong! -${last['max_pts']}")
-        st.write(f"The answer was: **{last['answer']}**")
+    # Player buttons
+    players = st.session_state.players
+    cols = st.columns(len(players))
+    for i, player in enumerate(players):
+        with cols[i]:
+            if st.button(f"✅ {player}", key=f"correct_{player}", use_container_width=True):
+                award_points(player, True)
+                st.rerun()
 
-    st.write(f"Time: {last['time']}s")
+    st.write("")
+    st.markdown("### ❌ Who got it wrong?")
+    cols2 = st.columns(len(players))
+    for i, player in enumerate(players):
+        with cols2[i]:
+            if st.button(f"❌ {player}", key=f"wrong_{player}", use_container_width=True, type="secondary"):
+                award_points(player, False)
+                st.rerun()
 
-    if st.button("Next Turn", type="primary", use_container_width=True):
-        next_turn()
-        st.session_state.screen = "board"
-        st.rerun()
+    st.write("")
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("⏭️ Skip (nobody answered)", use_container_width=True):
+            skip_question()
+            st.rerun()
 
 def show_final():
     scores = st.session_state.scores
@@ -212,11 +331,23 @@ def show_final():
     winner = ranked[0]
 
     st.balloons()
-    st.title(f"🏆 {winner[0]} wins!")
-    st.header(f"Final Score: ${winner[1]}")
-    st.divider()
+    st.markdown('<h1 class="main-title">🏆 GAME OVER</h1>', unsafe_allow_html=True)
+    st.write("")
 
-    st.subheader("Final Standings")
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown(f"""
+            <div style="text-align: center; padding: 30px; background: linear-gradient(145deg, #2d2d44, #1a1a2e); border-radius: 20px; border: 3px solid #feca57;">
+                <div style="font-size: 4rem;">👑</div>
+                <div style="font-size: 2rem; color: #feca57; font-weight: bold;">{winner[0]}</div>
+                <div style="font-size: 3rem; color: #2ecc71; font-weight: bold;">${winner[1]}</div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+    st.divider()
+    st.markdown("### 📊 Final Standings")
+
     for i, (player, score) in enumerate(ranked, 1):
         if i == 1:
             medal = "🥇"
@@ -225,35 +356,44 @@ def show_final():
         elif i == 3:
             medal = "🥉"
         else:
-            medal = f"  {i}."
-        color = "green" if score >= 0 else "red"
-        st.markdown(f"{medal} **{player}** — :{color}[${score}]")
+            medal = f"#{i}"
+        color = "#2ecc71" if score >= 0 else "#e74c3c"
+        st.markdown(f"""
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; margin: 5px 0; background: linear-gradient(145deg, #2d2d44, #1a1a2e); border-radius: 10px;">
+                <span style="font-size: 1.3rem;">{medal} {player}</span>
+                <span style="font-size: 1.3rem; color: {color}; font-weight: bold;">${score}</span>
+            </div>
+        """, unsafe_allow_html=True)
 
+    st.write("")
     st.divider()
-    st.subheader("Round Summary")
-    for h in st.session_state.history:
-        if h["correct"]:
-            st.success(f"**{h['player']}** — {h['category'].title()} ${h['max_pts']} — {h['question']} (+${h['earned']}, {h['time']}s)")
-        else:
-            st.error(f"**{h['player']}** — {h['category'].title()} ${h['max_pts']} — {h['question']} — Answer: {h['answer']} ({h['time']}s)")
 
-    st.divider()
+    with st.expander("📜 Round History"):
+        for h in st.session_state.history:
+            if h["player"] == "Nobody":
+                st.info(f"⏭️ **{h['category'].title()} ${abs(h['earned']) if h['earned'] != 0 else st.session_state.current_pts}** — Skipped")
+            elif h["correct"]:
+                st.success(f"✅ **{h['player']}** — {h['category'].title()} +${h['earned']}")
+            else:
+                st.error(f"❌ **{h['player']}** — {h['category'].title()} -${abs(h['earned'])}")
+
+    st.write("")
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("Save All Scores", type="primary"):
+        if st.button("💾 Save Scores", type="primary", use_container_width=True):
             total = sum(POINT_VALUES) * len(get_categories())
             for player, score in scores.items():
                 save_score(player, score, total, "jeopardy")
-            st.success("Scores saved!")
+            st.success("Scores saved! 🎉")
     with col2:
-        if st.button("Play Again"):
-            st.session_state.screen = "start"
+        if st.button("🔄 Play Again", use_container_width=True):
+            reset_to_start()
             st.rerun()
 
 def show_leaderboard():
     scores = get_top_scores(10)
     if not scores:
-        st.info("No scores yet. Play a round!")
+        st.info("No scores yet! Play a game 🎮")
     else:
         for i, s in enumerate(scores, 1):
             if i == 1:
@@ -263,8 +403,8 @@ def show_leaderboard():
             elif i == 3:
                 medal = "🥉"
             else:
-                medal = f"  {i}."
-            st.write(f"{medal} **{s['name']}** — {s['score']}/{s['total']} pts _{s['date']}_")
+                medal = f"#{i}"
+            st.write(f"{medal} **{s['name']}** — ${s['score']}")
 
 def main():
     init_state()
@@ -275,8 +415,6 @@ def main():
         show_board()
     elif screen == "question":
         show_question()
-    elif screen == "result":
-        show_result()
     elif screen == "final":
         show_final()
 

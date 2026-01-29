@@ -23,9 +23,19 @@ st.markdown("""
     }
     .subtitle {
         text-align: center;
-        color: #a0a0a0;
+        color: #ffffff;
         font-size: 1.2rem;
         margin-top: 0;
+    }
+    /* Make all text white for visibility */
+    .stMarkdown, .stText, p, span, label, .stSelectbox label, .stTextInput label {
+        color: #ffffff !important;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff !important;
+    }
+    .stExpander p, .stExpander span {
+        color: #ffffff !important;
     }
     .player-card {
         background: linear-gradient(145deg, #2d2d44, #1a1a2e);
@@ -69,6 +79,23 @@ st.markdown("""
     }
     div[data-testid="stButton"] button:hover {
         transform: scale(1.02);
+    }
+    /* Fix caption and other muted text */
+    .stCaption, small, .st-emotion-cache-1gulkj5 {
+        color: #e0e0e0 !important;
+    }
+    /* Fix selectbox and input text */
+    .stSelectbox > div > div, .stTextInput > div > div > input {
+        color: #ffffff !important;
+        background-color: #2d2d44 !important;
+    }
+    /* Fix expander text */
+    .streamlit-expanderHeader {
+        color: #ffffff !important;
+    }
+    /* Fix info/success/error box text */
+    .stAlert p {
+        color: #1a1a2e !important;
     }
 </style>
 """, unsafe_allow_html=True)

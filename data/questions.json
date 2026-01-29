@@ -3,85 +3,155 @@
     {"question": "What planet is known as the Red Planet?", "options": ["Venus", "Mars", "Jupiter", "Saturn"], "answer": "Mars", "points": 200},
     {"question": "What is the chemical symbol for water?", "options": ["O2", "CO2", "H2O", "NaCl"], "answer": "H2O", "points": 200},
     {"question": "How many legs does a spider have?", "options": ["6", "8", "10", "12"], "answer": "8", "points": 200},
+    {"question": "What is the largest organ in the human body?", "options": ["Heart", "Liver", "Skin", "Brain"], "answer": "Skin", "points": 200},
+    {"question": "What do bees make?", "options": ["Milk", "Honey", "Silk", "Wax"], "answer": "Honey", "points": 200},
+
     {"question": "What gas do plants absorb from the air?", "options": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Helium"], "answer": "Carbon Dioxide", "points": 400},
     {"question": "What is the closest star to Earth?", "options": ["Sirius", "Alpha Centauri", "The Sun", "Betelgeuse"], "answer": "The Sun", "points": 400},
     {"question": "What is the powerhouse of the cell?", "options": ["Nucleus", "Ribosome", "Mitochondria", "Golgi body"], "answer": "Mitochondria", "points": 400},
+    {"question": "What planet is famous for its rings?", "options": ["Mars", "Jupiter", "Saturn", "Neptune"], "answer": "Saturn", "points": 400},
+    {"question": "What force keeps us on the ground?", "options": ["Magnetism", "Friction", "Gravity", "Inertia"], "answer": "Gravity", "points": 400},
+
     {"question": "How many bones are in the human body?", "options": ["106", "206", "306", "186"], "answer": "206", "points": 600},
     {"question": "What planet has the most moons?", "options": ["Jupiter", "Saturn", "Uranus", "Neptune"], "answer": "Saturn", "points": 600},
     {"question": "What is the hardest natural substance?", "options": ["Iron", "Granite", "Diamond", "Quartz"], "answer": "Diamond", "points": 600},
+    {"question": "What is the smallest unit of life?", "options": ["Atom", "Molecule", "Cell", "Organ"], "answer": "Cell", "points": 600},
+    {"question": "What type of animal is a dolphin?", "options": ["Fish", "Mammal", "Reptile", "Amphibian"], "answer": "Mammal", "points": 600},
+
     {"question": "What element has the atomic number 79?", "options": ["Silver", "Iron", "Gold", "Copper"], "answer": "Gold", "points": 800},
     {"question": "What is the speed of light in km/s (approx)?", "options": ["100,000", "200,000", "300,000", "400,000"], "answer": "300,000", "points": 800},
     {"question": "What type of bond shares electrons between atoms?", "options": ["Ionic", "Covalent", "Metallic", "Hydrogen"], "answer": "Covalent", "points": 800},
+    {"question": "What vitamin does the sun help produce?", "options": ["Vitamin A", "Vitamin C", "Vitamin D", "Vitamin E"], "answer": "Vitamin D", "points": 800},
+    {"question": "What is the chemical formula for table salt?", "options": ["NaCl", "KCl", "CaCl2", "MgCl2"], "answer": "NaCl", "points": 800},
+
     {"question": "What particle has a negative charge?", "options": ["Proton", "Neutron", "Electron", "Photon"], "answer": "Electron", "points": 1000},
     {"question": "What is the most abundant gas in Earth's atmosphere?", "options": ["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"], "answer": "Nitrogen", "points": 1000},
-    {"question": "What organ produces insulin?", "options": ["Liver", "Kidney", "Pancreas", "Stomach"], "answer": "Pancreas", "points": 1000}
+    {"question": "What organ produces insulin?", "options": ["Liver", "Kidney", "Pancreas", "Stomach"], "answer": "Pancreas", "points": 1000},
+    {"question": "What is absolute zero in Celsius?", "options": ["-273°C", "-100°C", "0°C", "-373°C"], "answer": "-273°C", "points": 1000},
+    {"question": "What scientist developed the theory of relativity?", "options": ["Newton", "Einstein", "Hawking", "Bohr"], "answer": "Einstein", "points": 1000}
   ],
   "geography": [
     {"question": "What is the capital of Mongolia?", "options": ["Astana", "Ulaanbaatar", "Beijing", "Seoul"], "answer": "Ulaanbaatar", "points": 200},
     {"question": "Which continent is the largest by area?", "options": ["Africa", "North America", "Europe", "Asia"], "answer": "Asia", "points": 200},
     {"question": "What ocean is the largest?", "options": ["Atlantic", "Indian", "Pacific", "Arctic"], "answer": "Pacific", "points": 200},
+    {"question": "What country has the shape of a boot?", "options": ["Spain", "France", "Italy", "Greece"], "answer": "Italy", "points": 200},
+    {"question": "What is the capital of France?", "options": ["London", "Berlin", "Paris", "Rome"], "answer": "Paris", "points": 200},
+
     {"question": "What is the longest river in the world?", "options": ["Amazon", "Nile", "Yangtze", "Mississippi"], "answer": "Nile", "points": 400},
     {"question": "What country has the most people?", "options": ["USA", "India", "China", "Indonesia"], "answer": "India", "points": 400},
     {"question": "What is the tallest mountain in the world?", "options": ["K2", "Kangchenjunga", "Mount Everest", "Lhotse"], "answer": "Mount Everest", "points": 400},
+    {"question": "What is the capital of Japan?", "options": ["Seoul", "Beijing", "Tokyo", "Bangkok"], "answer": "Tokyo", "points": 400},
+    {"question": "What country is known as the Land of the Rising Sun?", "options": ["China", "Korea", "Japan", "Thailand"], "answer": "Japan", "points": 400},
+
     {"question": "What is the smallest country in the world?", "options": ["Monaco", "Vatican City", "Malta", "San Marino"], "answer": "Vatican City", "points": 600},
     {"question": "What is the capital of Australia?", "options": ["Sydney", "Melbourne", "Canberra", "Brisbane"], "answer": "Canberra", "points": 600},
     {"question": "What desert is the largest in the world?", "options": ["Sahara", "Gobi", "Antarctic", "Arabian"], "answer": "Antarctic", "points": 600},
+    {"question": "What is the largest country by area?", "options": ["Canada", "USA", "China", "Russia"], "answer": "Russia", "points": 600},
+    {"question": "What sea is the saltiest in the world?", "options": ["Red Sea", "Dead Sea", "Black Sea", "Caspian Sea"], "answer": "Dead Sea", "points": 600},
+
     {"question": "What is the driest desert in the world?", "options": ["Sahara", "Gobi", "Atacama", "Arabian"], "answer": "Atacama", "points": 800},
     {"question": "Which country has the most time zones?", "options": ["Russia", "USA", "France", "China"], "answer": "France", "points": 800},
     {"question": "What country has the longest coastline?", "options": ["Russia", "Australia", "Canada", "Indonesia"], "answer": "Canada", "points": 800},
+    {"question": "What is the capital of South Korea?", "options": ["Busan", "Seoul", "Incheon", "Daegu"], "answer": "Seoul", "points": 800},
+    {"question": "What African country has pyramids?", "options": ["Morocco", "Egypt", "Kenya", "Nigeria"], "answer": "Egypt", "points": 800},
+
     {"question": "What is the deepest lake in the world?", "options": ["Lake Superior", "Lake Baikal", "Lake Tanganyika", "Caspian Sea"], "answer": "Lake Baikal", "points": 1000},
     {"question": "What river runs through the most countries?", "options": ["Nile", "Amazon", "Danube", "Mekong"], "answer": "Danube", "points": 1000},
-    {"question": "What is the smallest continent by land area?", "options": ["Europe", "Antarctica", "Australia", "South America"], "answer": "Australia", "points": 1000}
+    {"question": "What is the smallest continent by land area?", "options": ["Europe", "Antarctica", "Australia", "South America"], "answer": "Australia", "points": 1000},
+    {"question": "What is the highest waterfall in the world?", "options": ["Niagara Falls", "Victoria Falls", "Angel Falls", "Iguazu Falls"], "answer": "Angel Falls", "points": 1000},
+    {"question": "What country has the most islands?", "options": ["Indonesia", "Philippines", "Sweden", "Finland"], "answer": "Sweden", "points": 1000}
   ],
   "history": [
     {"question": "Who founded the Mongol Empire?", "options": ["Kublai Khan", "Genghis Khan", "Ogedei Khan", "Batu Khan"], "answer": "Genghis Khan", "points": 200},
     {"question": "In what year did World War II end?", "options": ["1943", "1944", "1945", "1946"], "answer": "1945", "points": 200},
     {"question": "What ship sank in 1912?", "options": ["Lusitania", "Titanic", "Bismarck", "Maine"], "answer": "Titanic", "points": 200},
+    {"question": "Who was the first President of the USA?", "options": ["Lincoln", "Jefferson", "Washington", "Adams"], "answer": "Washington", "points": 200},
+    {"question": "What wall divided Berlin?", "options": ["Iron Wall", "Berlin Wall", "Stone Wall", "Great Wall"], "answer": "Berlin Wall", "points": 200},
+
     {"question": "Who was the first person to walk on the moon?", "options": ["Buzz Aldrin", "Yuri Gagarin", "Neil Armstrong", "John Glenn"], "answer": "Neil Armstrong", "points": 400},
     {"question": "What ancient wonder was located in Egypt?", "options": ["Colosseum", "Great Pyramid of Giza", "Hanging Gardens", "Parthenon"], "answer": "Great Pyramid of Giza", "points": 400},
     {"question": "Which empire was the largest in history by land area?", "options": ["Roman Empire", "British Empire", "Mongol Empire", "Ottoman Empire"], "answer": "Mongol Empire", "points": 400},
+    {"question": "What year did World War I begin?", "options": ["1912", "1914", "1916", "1918"], "answer": "1914", "points": 400},
+    {"question": "Who discovered America in 1492?", "options": ["Magellan", "Columbus", "Vespucci", "Cabot"], "answer": "Columbus", "points": 400},
+
     {"question": "In what year was the Berlin Wall torn down?", "options": ["1987", "1989", "1991", "1993"], "answer": "1989", "points": 600},
     {"question": "Who was the first Emperor of Rome?", "options": ["Julius Caesar", "Augustus", "Nero", "Caligula"], "answer": "Augustus", "points": 600},
     {"question": "What year did Mongolia declare independence from China?", "options": ["1911", "1921", "1924", "1945"], "answer": "1911", "points": 600},
+    {"question": "Who wrote the Declaration of Independence?", "options": ["Washington", "Adams", "Jefferson", "Franklin"], "answer": "Jefferson", "points": 600},
+    {"question": "What empire built the Colosseum?", "options": ["Greek", "Roman", "Byzantine", "Ottoman"], "answer": "Roman", "points": 600},
+
     {"question": "Who painted the ceiling of the Sistine Chapel?", "options": ["Da Vinci", "Raphael", "Michelangelo", "Donatello"], "answer": "Michelangelo", "points": 800},
     {"question": "What was the longest war in history?", "options": ["Hundred Years War", "Reconquista", "Thirty Years War", "Punic Wars"], "answer": "Reconquista", "points": 800},
     {"question": "Who was the first female pharaoh of Egypt?", "options": ["Cleopatra", "Nefertiti", "Hatshepsut", "Nefertari"], "answer": "Hatshepsut", "points": 800},
+    {"question": "What ancient city was destroyed by a volcano?", "options": ["Rome", "Athens", "Pompeii", "Carthage"], "answer": "Pompeii", "points": 800},
+    {"question": "Who led the Mongols into Europe?", "options": ["Genghis Khan", "Batu Khan", "Kublai Khan", "Ogedei Khan"], "answer": "Batu Khan", "points": 800},
+
     {"question": "What treaty ended World War I?", "options": ["Treaty of Paris", "Treaty of Versailles", "Treaty of Vienna", "Treaty of Ghent"], "answer": "Treaty of Versailles", "points": 1000},
     {"question": "What year was the printing press invented?", "options": ["1340", "1440", "1540", "1640"], "answer": "1440", "points": 1000},
-    {"question": "Who was the first Khagan of the Xiongnu Empire?", "options": ["Modu", "Attila", "Touman", "Zhizhi"], "answer": "Modu", "points": 1000}
+    {"question": "Who was the first Khagan of the Xiongnu Empire?", "options": ["Modu", "Attila", "Touman", "Zhizhi"], "answer": "Modu", "points": 1000},
+    {"question": "What year did the French Revolution begin?", "options": ["1776", "1789", "1799", "1804"], "answer": "1789", "points": 1000},
+    {"question": "Who united the Mongol tribes before Genghis Khan's rise?", "options": ["Yesugei", "Jamukha", "Toghrul", "Ambaghai"], "answer": "Yesugei", "points": 1000}
   ],
   "pop culture": [
     {"question": "What is the highest-grossing film of all time?", "options": ["Titanic", "Avatar", "Avengers: Endgame", "Star Wars"], "answer": "Avatar", "points": 200},
     {"question": "What band sang 'Bohemian Rhapsody'?", "options": ["The Beatles", "Queen", "Led Zeppelin", "Pink Floyd"], "answer": "Queen", "points": 200},
     {"question": "What is the name of Harry Potter's owl?", "options": ["Errol", "Hedwig", "Pigwidgeon", "Fawkes"], "answer": "Hedwig", "points": 200},
+    {"question": "What color is Pikachu?", "options": ["Red", "Blue", "Yellow", "Green"], "answer": "Yellow", "points": 200},
+    {"question": "What superhero is known as the Dark Knight?", "options": ["Superman", "Batman", "Spider-Man", "Iron Man"], "answer": "Batman", "points": 200},
+
     {"question": "What video game features a plumber named Mario?", "options": ["Sonic", "Zelda", "Super Mario Bros", "Donkey Kong"], "answer": "Super Mario Bros", "points": 400},
     {"question": "Who played Iron Man in the MCU?", "options": ["Chris Evans", "Chris Hemsworth", "Robert Downey Jr", "Mark Ruffalo"], "answer": "Robert Downey Jr", "points": 400},
     {"question": "What TV show features dragons and the Iron Throne?", "options": ["Lord of the Rings", "The Witcher", "Game of Thrones", "Vikings"], "answer": "Game of Thrones", "points": 400},
+    {"question": "What is the name of the Disney princess with ice powers?", "options": ["Anna", "Elsa", "Rapunzel", "Moana"], "answer": "Elsa", "points": 400},
+    {"question": "Who sang 'Bad Guy'?", "options": ["Ariana Grande", "Billie Eilish", "Taylor Swift", "Dua Lipa"], "answer": "Billie Eilish", "points": 400},
+
     {"question": "What anime features a character named Goku?", "options": ["Naruto", "One Piece", "Dragon Ball", "Bleach"], "answer": "Dragon Ball", "points": 600},
     {"question": "Who wrote the 'Lord of the Rings' trilogy?", "options": ["C.S. Lewis", "J.R.R. Tolkien", "George R.R. Martin", "J.K. Rowling"], "answer": "J.R.R. Tolkien", "points": 600},
     {"question": "What year was Minecraft first released?", "options": ["2009", "2011", "2013", "2015"], "answer": "2011", "points": 600},
+    {"question": "What is the name of Thor's hammer?", "options": ["Stormbreaker", "Mjolnir", "Gungnir", "Hofund"], "answer": "Mjolnir", "points": 600},
+    {"question": "What band is BTS?", "options": ["American", "Japanese", "Korean", "Chinese"], "answer": "Korean", "points": 600},
+
     {"question": "What K-pop group has the most YouTube views?", "options": ["BTS", "BLACKPINK", "EXO", "TWICE"], "answer": "BLACKPINK", "points": 800},
     {"question": "What is the best-selling video game of all time?", "options": ["GTA V", "Minecraft", "Tetris", "Wii Sports"], "answer": "Minecraft", "points": 800},
     {"question": "Who directed 'Inception'?", "options": ["Steven Spielberg", "Christopher Nolan", "James Cameron", "Ridley Scott"], "answer": "Christopher Nolan", "points": 800},
+    {"question": "What is Baby Yoda's real name?", "options": ["Yoda Jr", "Grogu", "Yaddle", "Minch"], "answer": "Grogu", "points": 800},
+    {"question": "Who plays Wednesday in the Netflix series?", "options": ["Millie Bobby Brown", "Jenna Ortega", "Sadie Sink", "Emma Myers"], "answer": "Jenna Ortega", "points": 800},
+
     {"question": "What is the rarest item in standard Minecraft?", "options": ["Diamond", "Netherite", "Dragon Egg", "Enchanted Apple"], "answer": "Dragon Egg", "points": 1000},
     {"question": "What year was the first iPhone released?", "options": ["2005", "2006", "2007", "2008"], "answer": "2007", "points": 1000},
-    {"question": "What was the first feature-length animated film?", "options": ["Bambi", "Fantasia", "Snow White", "Pinocchio"], "answer": "Snow White", "points": 1000}
+    {"question": "What was the first feature-length animated film?", "options": ["Bambi", "Fantasia", "Snow White", "Pinocchio"], "answer": "Snow White", "points": 1000},
+    {"question": "Who created SpongeBob SquarePants?", "options": ["Seth MacFarlane", "Stephen Hillenburg", "Matt Groening", "Butch Hartman"], "answer": "Stephen Hillenburg", "points": 1000},
+    {"question": "What game has a character named Master Chief?", "options": ["Call of Duty", "Halo", "Gears of War", "Destiny"], "answer": "Halo", "points": 1000}
   ],
   "technology": [
     {"question": "What does CPU stand for?", "options": ["Central Process Unit", "Central Processing Unit", "Computer Personal Unit", "Central Program Utility"], "answer": "Central Processing Unit", "points": 200},
     {"question": "What company made the iPhone?", "options": ["Samsung", "Google", "Apple", "Microsoft"], "answer": "Apple", "points": 200},
-    {"question": "What does Wi-Fi stand for?", "options": ["Wireless Fidelity", "Wide Frequency", "It's a brand name", "Wireless Finder"], "answer": "It's a brand name", "points": 200},
+    {"question": "What does USB stand for?", "options": ["Universal Serial Bus", "United System Bus", "Universal System Board", "United Serial Board"], "answer": "Universal Serial Bus", "points": 200},
+    {"question": "What animal is the logo of Firefox?", "options": ["Wolf", "Fox", "Dog", "Cat"], "answer": "Fox", "points": 200},
+    {"question": "What does PDF stand for?", "options": ["Portable Document Format", "Print Document File", "Personal Data File", "Public Document Format"], "answer": "Portable Document Format", "points": 200},
+
     {"question": "What language is most used for web pages?", "options": ["Python", "Java", "HTML", "C++"], "answer": "HTML", "points": 400},
     {"question": "What does RAM stand for?", "options": ["Random Access Memory", "Read All Memory", "Run Application Memory", "Rapid Access Module"], "answer": "Random Access Memory", "points": 400},
     {"question": "Who is the founder of Microsoft?", "options": ["Steve Jobs", "Bill Gates", "Elon Musk", "Jeff Bezos"], "answer": "Bill Gates", "points": 400},
+    {"question": "What company owns Instagram?", "options": ["Google", "Twitter", "Meta", "Microsoft"], "answer": "Meta", "points": 400},
+    {"question": "What does WiFi actually stand for?", "options": ["Wireless Fidelity", "Wide Frequency", "Nothing - it's a brand name", "Wireless Finder"], "answer": "Nothing - it's a brand name", "points": 400},
+
     {"question": "What does API stand for?", "options": ["Application Programming Interface", "Applied Program Integration", "Automated Protocol Interface", "Application Process Input"], "answer": "Application Programming Interface", "points": 600},
     {"question": "What year was Python first released?", "options": ["1989", "1991", "1995", "2000"], "answer": "1991", "points": 600},
-    {"question": "What is the most popular programming language in 2024?", "options": ["Java", "Python", "JavaScript", "C++"], "answer": "Python", "points": 600},
+    {"question": "What is the most popular programming language?", "options": ["Java", "Python", "JavaScript", "C++"], "answer": "Python", "points": 600},
+    {"question": "Who founded Amazon?", "options": ["Elon Musk", "Bill Gates", "Jeff Bezos", "Mark Zuckerberg"], "answer": "Jeff Bezos", "points": 600},
+    {"question": "What does SSD stand for?", "options": ["Solid State Drive", "Super Speed Disk", "System Storage Device", "Serial Storage Drive"], "answer": "Solid State Drive", "points": 600},
+
     {"question": "What does GPU stand for?", "options": ["General Processing Unit", "Graphics Processing Unit", "Global Performance Utility", "Graphics Program Unit"], "answer": "Graphics Processing Unit", "points": 800},
     {"question": "What company created the first commercial computer mouse?", "options": ["Apple", "IBM", "Xerox", "Microsoft"], "answer": "Xerox", "points": 800},
     {"question": "What was the first programming language?", "options": ["FORTRAN", "COBOL", "Assembly", "Plankalkul"], "answer": "Plankalkul", "points": 800},
+    {"question": "Who is the CEO of Tesla?", "options": ["Tim Cook", "Elon Musk", "Sundar Pichai", "Satya Nadella"], "answer": "Elon Musk", "points": 800},
+    {"question": "What does iOS stand for?", "options": ["Internet Operating System", "iPhone Operating System", "Integrated Operating System", "Internal Operating System"], "answer": "iPhone Operating System", "points": 800},
+
     {"question": "How many bits are in a byte?", "options": ["4", "8", "16", "32"], "answer": "8", "points": 1000},
     {"question": "What does SQL stand for?", "options": ["Structured Query Language", "Simple Question Language", "Standard Query Logic", "System Query Language"], "answer": "Structured Query Language", "points": 1000},
-    {"question": "Who is known as the father of computer science?", "options": ["John von Neumann", "Alan Turing", "Charles Babbage", "Ada Lovelace"], "answer": "Alan Turing", "points": 1000}
+    {"question": "Who is known as the father of computer science?", "options": ["John von Neumann", "Alan Turing", "Charles Babbage", "Ada Lovelace"], "answer": "Alan Turing", "points": 1000},
+    {"question": "What year was Google founded?", "options": ["1996", "1998", "2000", "2002"], "answer": "1998", "points": 1000},
+    {"question": "What does HTTP stand for?", "options": ["HyperText Transfer Protocol", "High Tech Transfer Protocol", "Hyper Transfer Text Protocol", "High Transfer Text Protocol"], "answer": "HyperText Transfer Protocol", "points": 1000}
   ]
 }

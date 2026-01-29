@@ -6,129 +6,114 @@ from scoring import save_score, get_top_scores, SCORES_FILE
 
 st.set_page_config(page_title="Khantushig's Jeopardy", page_icon="🎯", layout="wide")
 
-# Custom CSS for Gen Z vibes
+# Clean modern CSS - easy on the eyes
 st.markdown("""
 <style>
     .stApp {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        background: #1e1e2e;
     }
     .main-title {
-        font-size: 3.5rem;
+        font-size: 3rem;
         font-weight: 800;
-        background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #ffffff;
         text-align: center;
         margin-bottom: 0;
     }
     .subtitle {
         text-align: center;
-        color: #ffffff;
+        color: #b0b0b0;
         font-size: 1.2rem;
         margin-top: 0;
     }
-    /* Make all text white for visibility */
-    .stMarkdown, .stText, p, span, label, .stSelectbox label, .stTextInput label {
+    /* All text white */
+    .stMarkdown, .stText, p, span, label {
         color: #ffffff !important;
     }
     h1, h2, h3, h4, h5, h6 {
         color: #ffffff !important;
     }
-    .stExpander p, .stExpander span {
-        color: #ffffff !important;
-    }
-    .player-card {
-        background: linear-gradient(145deg, #2d2d44, #1a1a2e);
-        border-radius: 16px;
-        padding: 20px;
-        text-align: center;
-        border: 2px solid #3d3d5c;
-        transition: all 0.3s ease;
-    }
-    .player-card:hover {
-        transform: translateY(-5px);
-        border-color: #ff6b6b;
-    }
     .score-positive {
-        color: #2ecc71;
+        color: #4ade80;
         font-size: 2rem;
         font-weight: bold;
     }
     .score-negative {
-        color: #e74c3c;
+        color: #f87171;
         font-size: 2rem;
         font-weight: bold;
     }
     .question-box {
-        background: linear-gradient(145deg, #2d2d44, #1a1a2e);
-        border-radius: 20px;
+        background: #2a2a3e;
+        border-radius: 16px;
         padding: 30px;
-        border: 3px solid #48dbfb;
+        border: 2px solid #4a4a6a;
         margin: 20px 0;
     }
     .category-header {
-        color: #feca57;
+        color: #fbbf24;
         font-weight: bold;
         text-transform: uppercase;
         letter-spacing: 2px;
     }
+    /* Buttons - clean purple style */
     div[data-testid="stButton"] button {
-        border-radius: 12px;
+        border-radius: 10px;
         font-weight: 600;
-        transition: all 0.2s ease;
-        background-color: #2d2d44 !important;
+        background-color: #7c3aed !important;
         color: #ffffff !important;
-        border: 2px solid #48dbfb !important;
+        border: none !important;
     }
     div[data-testid="stButton"] button:hover {
-        transform: scale(1.02);
-        background-color: #3d3d5c !important;
-        border-color: #feca57 !important;
+        background-color: #8b5cf6 !important;
     }
     div[data-testid="stButton"] button[kind="primary"] {
-        background-color: #ff6b6b !important;
-        border-color: #ff6b6b !important;
+        background-color: #10b981 !important;
     }
     div[data-testid="stButton"] button[kind="primary"]:hover {
-        background-color: #ee5a5a !important;
+        background-color: #34d399 !important;
     }
     div[data-testid="stButton"] button:disabled {
-        background-color: #1a1a2e !important;
-        color: #666666 !important;
-        border-color: #333333 !important;
+        background-color: #374151 !important;
+        color: #6b7280 !important;
     }
-    /* Fix caption and other muted text */
-    .stCaption, small, .st-emotion-cache-1gulkj5 {
-        color: #e0e0e0 !important;
-    }
-    /* Fix selectbox and input text */
+    /* Inputs */
     .stSelectbox > div > div {
         color: #ffffff !important;
-        background-color: #2d2d44 !important;
-        border: 2px solid #48dbfb !important;
+        background-color: #374151 !important;
+        border: 1px solid #4b5563 !important;
         border-radius: 8px !important;
     }
     .stTextInput > div > div > input {
         color: #ffffff !important;
-        background-color: #2d2d44 !important;
-        border: 2px solid #48dbfb !important;
+        background-color: #374151 !important;
+        border: 1px solid #4b5563 !important;
         border-radius: 8px !important;
     }
-    /* Fix column backgrounds */
-    [data-testid="column"] {
-        background-color: transparent !important;
-    }
-    /* Fix any white containers */
-    .st-emotion-cache-1r6slb0, .st-emotion-cache-1wmy9hl, .block-container {
-        background-color: transparent !important;
-    }
-    /* Fix expander text */
-    .streamlit-expanderHeader {
+    /* Success/error boxes - brighter */
+    .stSuccess {
+        background-color: #065f46 !important;
         color: #ffffff !important;
     }
-    /* Fix info/success/error box text */
-    .stAlert p {
-        color: #1a1a2e !important;
+    .stSuccess p {
+        color: #ffffff !important;
+    }
+    .stError {
+        background-color: #991b1b !important;
+        color: #ffffff !important;
+    }
+    .stError p {
+        color: #ffffff !important;
+    }
+    .stInfo {
+        background-color: #1e40af !important;
+        color: #ffffff !important;
+    }
+    .stInfo p {
+        color: #ffffff !important;
+    }
+    /* Transparent backgrounds */
+    [data-testid="column"], .block-container {
+        background-color: transparent !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -288,9 +273,9 @@ def show_scoreboard():
             emoji = "🔥" if score > 0 else "💀" if score < 0 else "😐"
             color_class = "score-positive" if score >= 0 else "score-negative"
             st.markdown(f"""
-                <div style="text-align: center; padding: 10px; background: linear-gradient(145deg, #2d2d44, #1a1a2e); border-radius: 12px; border: 2px solid {'#2ecc71' if score >= 0 else '#e74c3c'};">
-                    <div style="font-size: 1.1rem; color: #fff; margin-bottom: 5px;">{emoji} {player}</div>
-                    <div class="{color_class}">${score}</div>
+                <div style="text-align: center; padding: 15px; background: #2a2a3e; border-radius: 12px; border: 2px solid {'#4ade80' if score >= 0 else '#f87171'};">
+                    <div style="font-size: 1.2rem; color: #fff; margin-bottom: 8px;">{emoji} {player}</div>
+                    <div style="font-size: 1.8rem; font-weight: bold; color: {'#4ade80' if score >= 0 else '#f87171'};">${score}</div>
                 </div>
             """, unsafe_allow_html=True)
 
@@ -339,9 +324,9 @@ def show_question():
     st.write("")
 
     st.markdown(f"""
-        <div class="question-box">
-            <p class="category-header">{cat.upper()} — ${pts}</p>
-            <h2 style="color: #fff; text-align: center; margin: 20px 0;">{q['question']}</h2>
+        <div style="background: #2a2a3e; border-radius: 16px; padding: 30px; border: 2px solid #7c3aed; margin: 20px 0;">
+            <p style="color: #fbbf24; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-align: center;">{cat.upper()} — ${pts}</p>
+            <h2 style="color: #fff; text-align: center; margin: 20px 0; font-size: 1.8rem;">{q['question']}</h2>
         </div>
     """, unsafe_allow_html=True)
 
@@ -397,10 +382,10 @@ def show_final():
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown(f"""
-            <div style="text-align: center; padding: 30px; background: linear-gradient(145deg, #2d2d44, #1a1a2e); border-radius: 20px; border: 3px solid #feca57;">
+            <div style="text-align: center; padding: 30px; background: #2a2a3e; border-radius: 20px; border: 3px solid #fbbf24;">
                 <div style="font-size: 4rem;">👑</div>
-                <div style="font-size: 2rem; color: #feca57; font-weight: bold;">{winner[0]}</div>
-                <div style="font-size: 3rem; color: #2ecc71; font-weight: bold;">${winner[1]}</div>
+                <div style="font-size: 2rem; color: #fbbf24; font-weight: bold;">{winner[0]}</div>
+                <div style="font-size: 3rem; color: #4ade80; font-weight: bold;">${winner[1]}</div>
             </div>
         """, unsafe_allow_html=True)
 
@@ -417,10 +402,10 @@ def show_final():
             medal = "🥉"
         else:
             medal = f"#{i}"
-        color = "#2ecc71" if score >= 0 else "#e74c3c"
+        color = "#4ade80" if score >= 0 else "#f87171"
         st.markdown(f"""
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; margin: 5px 0; background: linear-gradient(145deg, #2d2d44, #1a1a2e); border-radius: 10px;">
-                <span style="font-size: 1.3rem;">{medal} {player}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; margin: 8px 0; background: #2a2a3e; border-radius: 10px;">
+                <span style="font-size: 1.3rem; color: #ffffff;">{medal} {player}</span>
                 <span style="font-size: 1.3rem; color: {color}; font-weight: bold;">${score}</span>
             </div>
         """, unsafe_allow_html=True)

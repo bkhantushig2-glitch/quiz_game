@@ -76,18 +76,51 @@ st.markdown("""
         border-radius: 12px;
         font-weight: 600;
         transition: all 0.2s ease;
+        background-color: #2d2d44 !important;
+        color: #ffffff !important;
+        border: 2px solid #48dbfb !important;
     }
     div[data-testid="stButton"] button:hover {
         transform: scale(1.02);
+        background-color: #3d3d5c !important;
+        border-color: #feca57 !important;
+    }
+    div[data-testid="stButton"] button[kind="primary"] {
+        background-color: #ff6b6b !important;
+        border-color: #ff6b6b !important;
+    }
+    div[data-testid="stButton"] button[kind="primary"]:hover {
+        background-color: #ee5a5a !important;
+    }
+    div[data-testid="stButton"] button:disabled {
+        background-color: #1a1a2e !important;
+        color: #666666 !important;
+        border-color: #333333 !important;
     }
     /* Fix caption and other muted text */
     .stCaption, small, .st-emotion-cache-1gulkj5 {
         color: #e0e0e0 !important;
     }
     /* Fix selectbox and input text */
-    .stSelectbox > div > div, .stTextInput > div > div > input {
+    .stSelectbox > div > div {
         color: #ffffff !important;
         background-color: #2d2d44 !important;
+        border: 2px solid #48dbfb !important;
+        border-radius: 8px !important;
+    }
+    .stTextInput > div > div > input {
+        color: #ffffff !important;
+        background-color: #2d2d44 !important;
+        border: 2px solid #48dbfb !important;
+        border-radius: 8px !important;
+    }
+    /* Fix column backgrounds */
+    [data-testid="column"] {
+        background-color: transparent !important;
+    }
+    /* Fix any white containers */
+    .st-emotion-cache-1r6slb0, .st-emotion-cache-1wmy9hl, .block-container {
+        background-color: transparent !important;
     }
     /* Fix expander text */
     .streamlit-expanderHeader {

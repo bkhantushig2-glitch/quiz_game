@@ -59,6 +59,23 @@ def generate_wrong_sound():
 def generate_select_sound():
     return generate_tone(440, 0.1, 0.3)
 
+def generate_victory_sound():
+    notes = [523, 659, 784, 1047]
+    parts = []
+    for note in notes:
+        parts.append(generate_tone(note, 0.2, 0.4))
+
+    buf = io.BytesIO()
+    with wave.open(buf, 'wb') as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(22050)
+        for src in parts:
+            r = io.BytesIO(src)
+            with wave.open(r, 'rb') as rf:
+                wf.writeframes(rf.readframes(rf.getnframes()))
+    return buf.getvalue()
+
 def play_sound(wav_data):
     b64 = base64.b64encode(wav_data).decode()
     st.markdown(f"""

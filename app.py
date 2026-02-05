@@ -4,6 +4,7 @@ import os
 from questions import get_categories, get_point_values, build_board
 from scoring import save_score, get_top_scores, SCORES_FILE
 from timer import QUESTION_TIME_LIMIT, get_time_remaining, get_time_bonus, is_time_up
+from sounds import play_sound, generate_correct_sound, generate_wrong_sound, generate_select_sound, generate_victory_sound
 
 st.set_page_config(page_title="Khantushig's Jeopardy", page_icon="🎯", layout="wide")
 
@@ -136,6 +137,7 @@ def init_state():
         "show_answer": False,
         "question_start_time": None,
         "last_bonus": None,
+        "play_sfx": None,
     }
     for key, val in defaults.items():
         if key not in st.session_state:
@@ -164,6 +166,7 @@ def pick_question(cat, pts):
     st.session_state.show_answer = False
     st.session_state.question_start_time = time.time()
     st.session_state.last_bonus = None
+    st.session_state.play_sfx = "select"
     st.session_state.screen = "question"
 
 def award_points(player, correct):
@@ -176,10 +179,12 @@ def award_points(player, correct):
         earned = int(pts * bonus)
         st.session_state.scores[player] += earned
         st.session_state.last_bonus = bonus
+        st.session_state.play_sfx = "correct"
     else:
         st.session_state.scores[player] -= pts
         earned = -pts
         st.session_state.last_bonus = None
+        st.session_state.play_sfx = "wrong"
 
     key = f"{cat}_{pts}"
     st.session_state.used.add(key)
@@ -196,6 +201,7 @@ def award_points(player, correct):
     total_cells = len(get_categories()) * len(POINT_VALUES)
     if len(st.session_state.used) >= total_cells:
         st.session_state.screen = "final"
+        st.session_state.play_sfx = "victory"
     else:
         st.session_state.screen = "board"
 
@@ -213,6 +219,7 @@ def skip_question():
     total_cells = len(get_categories()) * len(POINT_VALUES)
     if len(st.session_state.used) >= total_cells:
         st.session_state.screen = "final"
+        st.session_state.play_sfx = "victory"
     else:
         st.session_state.screen = "board"
 
@@ -318,6 +325,7 @@ def show_board():
     with col1:
         if st.button("🏁 End Game", use_container_width=True):
             st.session_state.screen = "final"
+        st.session_state.play_sfx = "victory"
             st.rerun()
     with col2:
         if st.button("🔄 New Game", use_container_width=True):
@@ -506,8 +514,21 @@ def show_leaderboard():
                 medal = f"#{i}"
             st.write(f"{medal} **{s['name']}** — ${s['score']}")
 
+def play_pending_sound():
+    sfx = st.session_state.get("play_sfx")
+    if sfx == "correct":
+        play_sound(generate_correct_sound())
+    elif sfx == "wrong":
+        play_sound(generate_wrong_sound())
+    elif sfx == "select":
+        play_sound(generate_select_sound())
+    elif sfx == "victory":
+        play_sound(generate_victory_sound())
+    st.session_state.play_sfx = None
+
 def main():
     init_state()
+    play_pending_sound()
     screen = st.session_state.screen
     if screen == "start":
         show_start()

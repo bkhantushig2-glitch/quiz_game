@@ -3,6 +3,7 @@ import time
 import os
 from questions import get_categories, get_point_values, build_board
 from scoring import save_score, get_top_scores, SCORES_FILE
+from timer import QUESTION_TIME_LIMIT, get_time_remaining, get_time_bonus, is_time_up
 from sounds import play_sound, generate_correct_sound, generate_wrong_sound, generate_select_sound, generate_victory_sound
 
 st.set_page_config(page_title="Khantushig's Jeopardy", page_icon="🎯", layout="wide")
@@ -134,6 +135,8 @@ def init_state():
         "history": [],
         "num_players": 2,
         "show_answer": False,
+        "question_start_time": None,
+        "last_bonus": None,
         "play_sfx": None,
     }
     for key, val in defaults.items():
@@ -153,12 +156,16 @@ def reset_to_start():
     st.session_state.current_q = None
     st.session_state.history = []
     st.session_state.show_answer = False
+    st.session_state.question_start_time = None
+    st.session_state.last_bonus = None
 
 def pick_question(cat, pts):
     st.session_state.current_q = st.session_state.board[cat][pts]
     st.session_state.current_cat = cat
     st.session_state.current_pts = pts
     st.session_state.show_answer = False
+    st.session_state.question_start_time = time.time()
+    st.session_state.last_bonus = None
     st.session_state.play_sfx = "select"
     st.session_state.screen = "question"
 
@@ -168,12 +175,15 @@ def award_points(player, correct):
     q = st.session_state.current_q
 
     if correct:
-        st.session_state.scores[player] += pts
-        earned = pts
+        bonus = get_time_bonus(st.session_state.question_start_time)
+        earned = int(pts * bonus)
+        st.session_state.scores[player] += earned
+        st.session_state.last_bonus = bonus
         st.session_state.play_sfx = "correct"
     else:
         st.session_state.scores[player] -= pts
         earned = -pts
+        st.session_state.last_bonus = None
         st.session_state.play_sfx = "wrong"
 
     key = f"{cat}_{pts}"
@@ -185,6 +195,7 @@ def award_points(player, correct):
         "answer": q["answer"],
         "correct": correct,
         "earned": earned,
+        "bonus": bonus if correct else None,
     })
 
     total_cells = len(get_categories()) * len(POINT_VALUES)
@@ -331,12 +342,55 @@ def show_question():
     show_scoreboard()
     st.write("")
 
+    remaining = get_time_remaining(st.session_state.question_start_time)
+    time_up = is_time_up(st.session_state.question_start_time)
+    pct = remaining / QUESTION_TIME_LIMIT * 100
+
+    if remaining > 20:
+        bar_color = "#4ade80"
+    elif remaining > 10:
+        bar_color = "#fbbf24"
+    else:
+        bar_color = "#f87171"
+
     st.markdown(f"""
         <div style="background: #2a2a3e; border-radius: 16px; padding: 30px; border: 2px solid #7c3aed; margin: 20px 0;">
             <p style="color: #fbbf24; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-align: center;">{cat.upper()} — ${pts}</p>
             <h2 style="color: #fff; text-align: center; margin: 20px 0; font-size: 1.8rem;">{q['question']}</h2>
+            <div id="timer-container" style="text-align: center; margin-top: 15px;">
+                <div style="background: #374151; border-radius: 10px; height: 12px; overflow: hidden; margin: 0 40px;">
+                    <div id="timer-bar" style="background: {bar_color}; height: 100%; width: {pct:.0f}%; border-radius: 10px; transition: width 1s linear;"></div>
+                </div>
+                <p id="timer-text" style="color: {bar_color}; font-size: 1.5rem; font-weight: bold; margin-top: 8px;">
+                    {"TIME UP!" if time_up else f"{int(remaining)}s"}
+                </p>
+                <p style="color: #9ca3af; font-size: 0.8rem;">
+                    {"" if time_up else "< 10s = 1.5x pts | < 20s = 1x | < 30s = 0.5x"}
+                </p>
+            </div>
         </div>
+        <script>
+            var endTime = {time.time() + remaining};
+            var timerInterval = setInterval(function() {{
+                var now = Date.now() / 1000;
+                var left = Math.max(0, endTime - now);
+                var pct = (left / {QUESTION_TIME_LIMIT}) * 100;
+                var bar = document.getElementById('timer-bar');
+                var txt = document.getElementById('timer-text');
+                if (bar && txt) {{
+                    bar.style.width = pct + '%';
+                    if (left > 20) {{ bar.style.background = '#4ade80'; txt.style.color = '#4ade80'; }}
+                    else if (left > 10) {{ bar.style.background = '#fbbf24'; txt.style.color = '#fbbf24'; }}
+                    else {{ bar.style.background = '#f87171'; txt.style.color = '#f87171'; }}
+                    txt.innerText = left <= 0 ? 'TIME UP!' : Math.ceil(left) + 's';
+                }}
+                if (left <= 0) clearInterval(timerInterval);
+            }}, 1000);
+        </script>
     """, unsafe_allow_html=True)
+
+    if time_up:
+        st.warning("Time's up! Skip or award points manually.")
 
     # Show/hide answer toggle
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -426,7 +480,8 @@ def show_final():
             if h["player"] == "Nobody":
                 st.info(f"⏭️ **{h['category'].title()} ${abs(h['earned']) if h['earned'] != 0 else st.session_state.current_pts}** — Skipped")
             elif h["correct"]:
-                st.success(f"✅ **{h['player']}** — {h['category'].title()} +${h['earned']}")
+                bonus_tag = f" ({h['bonus']}x)" if h.get("bonus") and h["bonus"] != 1.0 else ""
+                st.success(f"✅ **{h['player']}** — {h['category'].title()} +${h['earned']}{bonus_tag}")
             else:
                 st.error(f"❌ **{h['player']}** — {h['category'].title()} -${abs(h['earned'])}")
 

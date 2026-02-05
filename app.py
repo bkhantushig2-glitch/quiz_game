@@ -166,6 +166,7 @@ def pick_question(cat, pts):
     st.session_state.show_answer = False
     st.session_state.question_start_time = time.time()
     st.session_state.last_bonus = None
+    st.session_state.timer_frozen_at = None
     st.session_state.play_sfx = "select"
     st.session_state.screen = "question"
 
@@ -175,7 +176,14 @@ def award_points(player, correct):
     q = st.session_state.current_q
 
     if correct:
-        bonus = get_time_bonus(st.session_state.question_start_time)
+        freeze = st.session_state.get("timer_frozen_at") or time.time()
+        elapsed = freeze - st.session_state.question_start_time
+        if elapsed <= 10:
+            bonus = 1.5
+        elif elapsed <= 20:
+            bonus = 1.0
+        else:
+            bonus = 0.5
         earned = int(pts * bonus)
         st.session_state.scores[player] += earned
         st.session_state.last_bonus = bonus
@@ -325,7 +333,7 @@ def show_board():
     with col1:
         if st.button("🏁 End Game", use_container_width=True):
             st.session_state.screen = "final"
-        st.session_state.play_sfx = "victory"
+            st.session_state.play_sfx = "victory"
             st.rerun()
     with col2:
         if st.button("🔄 New Game", use_container_width=True):
@@ -342,52 +350,67 @@ def show_question():
     show_scoreboard()
     st.write("")
 
-    remaining = get_time_remaining(st.session_state.question_start_time)
-    time_up = is_time_up(st.session_state.question_start_time)
-    pct = remaining / QUESTION_TIME_LIMIT * 100
-
-    if remaining > 20:
-        bar_color = "#4ade80"
-    elif remaining > 10:
-        bar_color = "#fbbf24"
+    frozen_at = st.session_state.get("timer_frozen_at")
+    if frozen_at:
+        elapsed = frozen_at - st.session_state.question_start_time
+        remaining = max(0, QUESTION_TIME_LIMIT - elapsed)
     else:
-        bar_color = "#f87171"
+        remaining = get_time_remaining(st.session_state.question_start_time)
+    time_up = remaining <= 0
+    frozen = "true" if frozen_at else "false"
 
     st.markdown(f"""
         <div style="background: #2a2a3e; border-radius: 16px; padding: 30px; border: 2px solid #7c3aed; margin: 20px 0;">
             <p style="color: #fbbf24; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-align: center;">{cat.upper()} — ${pts}</p>
             <h2 style="color: #fff; text-align: center; margin: 20px 0; font-size: 1.8rem;">{q['question']}</h2>
-            <div id="timer-container" style="text-align: center; margin-top: 15px;">
-                <div style="background: #374151; border-radius: 10px; height: 12px; overflow: hidden; margin: 0 40px;">
-                    <div id="timer-bar" style="background: {bar_color}; height: 100%; width: {pct:.0f}%; border-radius: 10px; transition: width 1s linear;"></div>
-                </div>
-                <p id="timer-text" style="color: {bar_color}; font-size: 1.5rem; font-weight: bold; margin-top: 8px;">
-                    {"TIME UP!" if time_up else f"{int(remaining)}s"}
-                </p>
-                <p style="color: #9ca3af; font-size: 0.8rem;">
-                    {"" if time_up else "< 10s = 1.5x pts | < 20s = 1x | < 30s = 0.5x"}
-                </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    import streamlit.components.v1 as components
+    components.html(f"""
+        <div id="timer-container" style="text-align: center; font-family: sans-serif;">
+            <div style="background: #374151; border-radius: 10px; height: 14px; overflow: hidden; margin: 0 20px;">
+                <div id="timer-bar" style="height: 100%; width: 100%; border-radius: 10px; transition: width 0.1s linear;"></div>
             </div>
+            <p id="timer-text" style="font-size: 1.8rem; font-weight: bold; margin-top: 10px;"></p>
+            <p id="bonus-text" style="color: #9ca3af; font-size: 0.85rem; margin-top: 4px;"></p>
         </div>
         <script>
-            var endTime = {time.time() + remaining};
-            var timerInterval = setInterval(function() {{
-                var now = Date.now() / 1000;
-                var left = Math.max(0, endTime - now);
-                var pct = (left / {QUESTION_TIME_LIMIT}) * 100;
+            var frozen = {frozen};
+            var remainSec = {remaining};
+            var endTime = Date.now() + remainSec * 1000;
+            var total = {QUESTION_TIME_LIMIT} * 1000;
+            function updateTimer() {{
+                var left = frozen ? remainSec * 1000 : Math.max(0, endTime - Date.now());
+                var pct = (left / total) * 100;
+                var secs = Math.ceil(left / 1000);
                 var bar = document.getElementById('timer-bar');
                 var txt = document.getElementById('timer-text');
-                if (bar && txt) {{
-                    bar.style.width = pct + '%';
-                    if (left > 20) {{ bar.style.background = '#4ade80'; txt.style.color = '#4ade80'; }}
-                    else if (left > 10) {{ bar.style.background = '#fbbf24'; txt.style.color = '#fbbf24'; }}
-                    else {{ bar.style.background = '#f87171'; txt.style.color = '#f87171'; }}
-                    txt.innerText = left <= 0 ? 'TIME UP!' : Math.ceil(left) + 's';
+                var bonus = document.getElementById('bonus-text');
+                var color = secs > 20 ? '#4ade80' : secs > 10 ? '#fbbf24' : '#f87171';
+                bar.style.width = pct + '%';
+                bar.style.background = color;
+                txt.style.color = color;
+                if (frozen) {{
+                    txt.innerText = secs + 's (paused)';
+                }} else {{
+                    txt.innerText = left <= 0 ? 'TIME UP!' : secs + 's';
                 }}
-                if (left <= 0) clearInterval(timerInterval);
-            }}, 1000);
+                if (left <= 0) {{
+                    bonus.innerText = '';
+                    txt.style.color = '#f87171';
+                }} else if (secs > 20) {{
+                    bonus.innerText = '1.5x bonus active';
+                }} else if (secs > 10) {{
+                    bonus.innerText = '1.0x normal points';
+                }} else {{
+                    bonus.innerText = '0.5x slow penalty';
+                }}
+                if (!frozen && left > 0) requestAnimationFrame(updateTimer);
+            }}
+            updateTimer();
         </script>
-    """, unsafe_allow_html=True)
+    """, height=130)
 
     if time_up:
         st.warning("Time's up! Skip or award points manually.")
@@ -397,6 +420,12 @@ def show_question():
     with col2:
         if st.button("👁️ Show Answer" if not st.session_state.show_answer else "🙈 Hide Answer", use_container_width=True):
             st.session_state.show_answer = not st.session_state.show_answer
+            if st.session_state.show_answer and st.session_state.get("timer_frozen_at") is None:
+                st.session_state.timer_frozen_at = time.time()
+            elif not st.session_state.show_answer and st.session_state.get("timer_frozen_at"):
+                paused_duration = time.time() - st.session_state.timer_frozen_at
+                st.session_state.question_start_time += paused_duration
+                st.session_state.timer_frozen_at = None
             st.rerun()
 
         if st.session_state.show_answer:
